@@ -4,7 +4,7 @@ A bunch of Powershell tools:
 
 ## Visio Tools
 
-## ThreatModelToVisio.ps1
+### ThreatModelToVisio.ps1
 
 Converts a Microsoft Threat Modeling Tool diagram to Visio.
 
@@ -24,7 +24,7 @@ The Visio diagram will be like this:
 
 
 
-## VisioBase.ps1
+### VisioBase.ps1
 
 An all-purpose class to draw Visio diagrams with Powershell.
 
