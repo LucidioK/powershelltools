@@ -72,7 +72,7 @@ Processes that will be forced to the lowest priority, only being executed when t
 - Code.exe         
 - EDPCleanup*           
 - FileCoAuth*           
-- IntuitUpdateService   
+- *UpdateService   
 - MicrosoftSearchInBing 
 - msiexec* 
 - OneDrive              
