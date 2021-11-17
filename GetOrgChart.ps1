@@ -590,7 +590,7 @@ function installActiveDirectoryModuleIfNeeded()
         {
             Write-Host 'Module ActiveDirectory not found, installing it (Workstation).' -ForegroundColor Yellow;
             $rsatPath = Join-Path $env:TEMP 'rsat.msu';
-            downloadFile -url 'https://download.microsoft.com/download/1/D/8/1D8B5022-5477-4B9A-8104-6A71FF9D98AB/WindowsTH-RSAT_WS_1803-x64.msu' -fullPath $rsatPath;
+            (new-object System.Net.WebClient).DownloadFile('https://download.microsoft.com/download/1/D/8/1D8B5022-5477-4B9A-8104-6A71FF9D98AB/WindowsTH-RSAT_WS_1803-x64.msu',  $rsatPath);
             Invoke-Item -Path $rsatPath;
     
             Read-Host -Prompt 'Press enter when the installation ends.';
