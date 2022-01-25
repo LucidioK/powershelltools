@@ -5,7 +5,7 @@
 
 .DESCRIPTION
 
-  Gets a given Release Definition, then places all its stages in the order defined by Rank, saving it with the same name with suffix " (Sequential)".
+  Gets a given Release Definition, then places all its stages in the order defined by Rank, saving it as a new Release Definition with the same name with suffix " (Sequential)".
 
 .PARAMETER <PAT>
 PAT (Personal Access Token) for ADO organization to manipulate Release Definitions, 
