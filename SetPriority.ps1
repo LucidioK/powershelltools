@@ -3,8 +3,7 @@
     [switch]$AsJob,
     [string[]]$IdlePriorityProcesses = @(        
         'AlertusDesktop*',       
-        'armsvc',       
-        'Code.exe',         
+        'armsvc',                
         'EDPCleanup*',           
         'FileCoAuth*',           
         'IntuitUpdateService',   
@@ -56,7 +55,7 @@ function global:SetPriority
     {
         [System.Collections.Generic.List[System.Diagnostics.Process]]$processes = [System.Collections.Generic.List[System.Diagnostics.Process]]::new();
         $ps = Get-Process -Name $processName -ErrorAction SilentlyContinue;
-        if ($ps -ne $null)
+        if ($null -ne $ps)
         {
             if ($ps.GetType().Name -eq 'Process')
             {
@@ -64,7 +63,7 @@ function global:SetPriority
             }
             else
             {
-                $ps | foreach { $processes.Add($_); }
+                $ps | ForEach-Object { $processes.Add($_); }
             }
         }
 
@@ -78,29 +77,32 @@ function global:SetPriority
     {
         Start-Sleep -Milliseconds 1;
 
-        if ($processHierarchy -eq $null)
+        if ($null -eq $processHierarchy)
         {
-            $processHierarchy = Get-WmiObject win32_process | select ProcessId, ParentProcessId;
+            $processHierarchy = $Script:allProcessHierarchy;
         }
 
-        if ($listUntilNow -eq $null)
+        if ($null -eq $listUntilNow)
         {
             $process = get-process -Id $processId;
             $listUntilNow = @($process);
         }
 
-        $childProcessIds = ($processHierarchy | ? parentprocessid -EQ $processId).ProcessId;
+        $childProcessIds = ($processHierarchy | Where-Object parentprocessid -EQ $processId).ProcessId;
         foreach ($childProcessId in $childProcessIds)
         {
-            [System.Collections.Generic.HashSet[int]]$idsUntilNow = [System.Collections.Generic.HashSet[int]]::new(($listUntilNow).Id);
-            if ($idsUntilNow -eq $null -or $idsUntilNow.Count -eq 0 -or !($idsUntilNow.Contains($childProcessId)))
+            if ($null -eq $idsUntilNow -or $idsUntilNow.Count -eq 0 -or !($idsUntilNow.Contains($childProcessId)))
             {
-                $listUntilNow += (get-process -Id $childProcessId); 
-                $listUntilNow = GetProcessTree $childProcessId $listUntilNow $processHierarchy;
+                $process = get-process -Id $childProcessId -ErrorAction SilentlyContinue;
+                if ($null -ne $process)
+                {
+                    $listUntilNow += $process; 
+                    $listUntilNow = GetProcessTree $childProcessId $listUntilNow $processHierarchy;
+                }
             }
         }
 
-        return $listUntilNow;
+        return ($listUntilNow  | Select-Object -Unique);
     }
 
     function SetPriorityForThisProcess([System.Diagnostics.Process]$process,[string]$priorityClass)
@@ -156,7 +158,10 @@ function global:SetPriority
     {
         $thisProcess.PriorityClass = 'BelowNormal';
     }
+
 }
+
+$Script:allProcessHierarchy = $processHierarchy = Get-CimInstance -ClassName 'CIM_Process' | Select-Object ProcessId, ParentProcessId;
 
 if ($AsJob)
 {
