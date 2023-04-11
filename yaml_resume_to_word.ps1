@@ -53,7 +53,7 @@
 param(
     [parameter(mandatory=$true , position = 0)]
     [string]$yaml_file_path)
-$yaml_file_path = 'C:\Users\lucid\OneDrive\LKPortfolio\cvlk3.yaml';
+
 if ($null -eq ('WordBase' -as [Type]))
 {
     Import-Module (Join-Path $PSScriptRoot 'WordBase.ps1');
