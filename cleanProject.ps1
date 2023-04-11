@@ -17,7 +17,7 @@ while ((Get-ChildItem  -Path '.' -Filter '*.sln') -eq $null -and $PWD.Path.Lengt
 
 if ($PWD.Path.Length -gt 3)
 {
-    git reset --hard;
+    #git reset --hard;
     $ln = @(); 
     for ($1 = 0; $i -lt 2048; $i++) { $ln += 'n'; }
     try

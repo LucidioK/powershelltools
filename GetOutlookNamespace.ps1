@@ -1,9 +1,22 @@
+if (!$env:Path.Contains($global:PSScriptRoot)) { $env:Path += ";$($global:PSScriptRoot)"}
 Get-Process OUTLOOK -ErrorAction SilentlyContinue | ForEach-Object { $_.Kill(); };
 
 if ($null -eq ('Microsoft.Office.Interop.Outlook.olDefaultFolders' -as [type]))
 {
-    $officeDirectory = (Get-ChildItem -Path $env:ProgramFiles -Filter '*Office*' -Directory | Sort-Object -Descending -Property CreationTime | Select-Object -First 1).FullName;
-    $outlookInteropPath = (Get-ChildItem -Path $officeDirectory -Filter Microsoft.Office.Interop.Outlook.dll -File -Recurse).Fullname;
+    $officeDirectories = (Get-ChildItem -Path $env:ProgramFiles -Filter '*Office*' -Directory | Sort-Object -Descending -Property CreationTime).FullName;
+    foreach ($officeDirectory in $officeDirectories)
+    {
+        $outlookInteropPath = (Get-ChildItem -Path $officeDirectory -Filter Microsoft.Office.Interop.Outlook.dll -File -Recurse).Fullname;
+        if ($null -ne $outlookInteropPath)
+        {
+            break;
+        }
+    }
+
+    if ($null -eq $outlookInteropPath)
+    {
+        throw "Could not find Microsoft.Office.Interop.Outlook.dll. Make sure Office is installed, with Outlook, under folder $($env:ProgramFiles).";
+    }
     Add-type -assembly $outlookInteropPath | out-null;
 }
 

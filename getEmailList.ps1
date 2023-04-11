@@ -1,7 +1,7 @@
 param ([string]$emailAccount = 'Lucidio.Kuhn@microsoft.com',
        [string]$folderName = 'Inbox')
 
-
+if (!$env:Path.Contains($global:PSScriptRoot)) { $env:Path += ";$($global:PSScriptRoot)"}
 function removeRes([string]$s)
 {
     do
@@ -56,7 +56,7 @@ function getEmailList([string]$emailAccount, [string]$folderName = 'Inbox')
     
     Get-Process OUTLOOK  -ErrorAction SilentlyContinue | ForEach-Object { $_.Kill(); };
 
-    return $mailItems;
+    return $mailItems | Sort-Object -Property ReceivedTime -Descending;
 }
 
 $l = getEmailList $emailAccount $folderName;

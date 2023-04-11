@@ -9,6 +9,7 @@ param(
 
     )
 
+if (!$env:Path.Contains($global:PSScriptRoot)) { $env:Path += ";$($global:PSScriptRoot)"}
 function getConversationIdsToBePacked([PSCustomObject[]]$EmailItems)
 {
     $conversationIds = ($EmailItems).ConversationID;

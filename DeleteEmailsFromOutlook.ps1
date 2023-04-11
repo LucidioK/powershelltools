@@ -6,7 +6,7 @@ param(
     [string]$EmailAccount, # Lucidio.Kuhn@microsoft.com
     [parameter(Mandatory=$true , Position = 2)]
     [string]$FolderName <# 'Inbox' #>)
-
+if (!$env:Path.Contains($global:PSScriptRoot)) { $env:Path += ";$($global:PSScriptRoot)"}
 $namespace     = GetOutlookNamespace.ps1;
 $accountFolder = GetOutlookSubFolder.ps1 -Folders $namespace.Folders     -Name $emailAccount;
 $emailFolder   = GetOutlookSubFolder.ps1 -Folders $accountFolder.Folders -Name $folderName;
@@ -30,3 +30,5 @@ for ($i = $count; $i -gt 0; $i--)
 }
 
 Get-Process OUTLOOK -ErrorAction SilentlyContinue | ForEach-Object { $_.Kill(); };
+
+Write-Host "\n\nDone." -ForegroundColor Green;
